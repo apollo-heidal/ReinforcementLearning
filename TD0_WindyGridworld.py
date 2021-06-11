@@ -100,7 +100,7 @@ class WindyGridworld:
             q_sp_ap = self.action_values[next_agent_pos][next_agent_action]
             # q(s, a)
             q_s_a = self.action_values[agent_pos][agent_action]
-            # update q(s,a) += alpha (reward + q(s',a') - q(s,a)); undiscounted, on-policy SARSA
+            # update q(s,a) += alpha (reward + q(s',a') - q(s,a)); undiscounted, off-policy SARSA
             self.action_values[agent_pos][agent_action] += self.alpha * (reward + q_sp_ap - q_s_a)
 
             # s = s'
@@ -108,7 +108,8 @@ class WindyGridworld:
             agent_path.append(agent_pos)
 
             # a = a'
-            # on-policy means we only use the greedy action for our prediction: q(s', a')
+            # off-policy means we only use the greedy action for our prediction: q(s', a')
+            # instead of follow our eps-greedy policy
             # but we include epsilon when actually making a move
             if np.random.random() < self.epsilon:
                 agent_action = np.random.randint(4)
@@ -124,7 +125,8 @@ class WindyGridworld:
         for e in range(n_episodes):
             if e % 1000 == 0:
                 print(f"average steps after {e} episodes = {avg_steps}")
-                self.printGreedyPolicy()
+                # self.printGreedyPolicy()
+                
             agent_path = self.episode()
             if e % 1000 == 0:
                 self.animationBuilder(agent_path)
@@ -160,22 +162,14 @@ class WindyGridworld:
 
 
     def showAnimation(self):
-        #  main draw loop called by FuncAnimation class
         fig = plt.figure("Windy Gridworld",figsize=(20,15))
         ax = fig.add_subplot(111)
 
-        # div = make_axes_locatable(ax)
-        # cax = div.append_axes('right', '5%', '5%')
-        # print(self.value_grid_iterations[-1])
-
         def animate(frame): 
             im = ax.matshow(self.frames[frame], cmap='plasma')
-            # cax.cla()
-            # fig.colorbar(im, cax=cax)
             return im,
 
         ani = FuncAnimation(fig, animate, frames=self.frames.shape[0], interval=10, blit=True)
-        # ani.save("gw3-animation.mp4")
         plt.show()
 
 
