@@ -123,13 +123,16 @@ class WindyGridworld:
         # calls each episode and stores analysis data structures
         avg_steps = 0
         for e in range(n_episodes):
-            if e % 1000 == 0:
-                print(f"average steps after {e} episodes = {avg_steps}")
-                # self.printGreedyPolicy()
-                
             agent_path = self.episode()
-            if e % 1000 == 0:
-                self.animationBuilder(agent_path)
+            print(len(agent_path))
+
+            # if e % 1000 == 0:
+            #     print(f"average steps after {e} episodes = {avg_steps}")
+            #     print(f"on episode {e} the agent took {len(agent_path)-1} to reach the reward")
+            #     # self.printGreedyPolicy()
+                
+            # if e % 1000 == 0:
+            #     self.animationBuilder(agent_path)
 
             avg_steps += (len(agent_path)-avg_steps) / (e+1)
 
@@ -162,18 +165,18 @@ class WindyGridworld:
 
 
     def showAnimation(self):
-        fig = plt.figure("Windy Gridworld",figsize=(20,15))
+        fig = plt.figure("Windy Gridworld",figsize=(20,14))
         ax = fig.add_subplot(111)
 
         def animate(frame): 
-            im = ax.matshow(self.frames[frame], cmap='plasma')
+            im = ax.matshow(self.frames[frame], cmap='cividis')
             return im,
 
-        ani = FuncAnimation(fig, animate, frames=self.frames.shape[0], interval=10, blit=True)
+        ani = FuncAnimation(fig, animate, frames=self.frames.shape[0], interval=5, blit=True)
         plt.show()
 
 
 if __name__ == "__main__":
     wgw = WindyGridworld()
     wgw.simulate(10000)
-    wgw.showAnimation()
+    # wgw.showAnimation()
